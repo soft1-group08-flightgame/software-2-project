@@ -44,7 +44,8 @@ screen2Button.addEventListener('click', function(e) {
   document.getElementById('screen-3').classList.add('active');
 })
 
-
+const modal = document.getElementById('screen-modal');
+console.log(modal);
 // function to fetch data from API
 
 // function to update game status
