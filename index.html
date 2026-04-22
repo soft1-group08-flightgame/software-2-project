@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"/>-->
+    <link href="css/style.css" rel="stylesheet">
+<!--    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" defer></script>-->
+<!--    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js" defer></script>-->
+<!--    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js" defer></script>-->
+    <script src="js/main.js" defer></script>
+    <title>Tennis Pro 2026</title>
+</head>
+
+<body>
+<div id="screen-1" class="screen-container active">
+    <h1>Tennis Pro 2026</h1>
+    <form id="form-intro">
+        <input name="name" type="text" placeholder="Enter your name">
+        <input name="nation" type="text" placeholder="Enter your nation">
+        <input name="age" type="text" placeholder="Enter your age">
+        <button class="btn-continue" type="submit">Press to Start</button>
+    </form>
+</div>
+<div id="screen-2" class="screen-container">
+    <p id="intro-story">
+    <span id="display-name"></span> was born in <span id="display-nation"></span>
+    <span id="display-age"></span> years ago into a very <span class="text-important red">poor family</span>. 🏚️<br><br>
+
+    He was the youngest of six siblings. Since childhood, he had to work in a
+    <span class="text-important blue">coal mine</span> to help his family survive. ⚒️<br><br>
+
+    One day, in the storage room of his house, he found an
+    <span class="text-important yellow">old tennis racket</span> that had belonged to his father,
+    a former amateur tennis player. From that moment on, he decided to learn how to play tennis
+    under his father's supervision. 🎾<br><br>
+
+    <span id="display-name-repeat"></span> was very talented and grew up with a
+    <span class="text-important red">passion for tennis</span> in his heart, playing and training
+    at every free moment after work. As time passed, he grew older, and so did his talent.<br><br>
+
+    He married a wonderful woman, but he still didn’t manage to escape
+    <span class="text-important red">poverty</span>. One day, he received news that a distant aunt
+    had died, leaving him an <span class="text-important green">inheritance of
+    <span id="display-heritage"></span> euros</span>. 💶<br><br>
+
+    This was a small amount of money. Unfortunately, it was not enough to change his economic situation,
+    but it gave him temporary relief. Randomly, <span class="text-important yellow">fortune</span>
+    seemed to turn in his favor. 🍀<br><br>
+
+    During a tennis match, he attracted the attention of a <span class="text-important blue">tennis scout</span>,
+    who invited him to substitute as a guest player in the World Tennis Championship after one of
+    the players was injured.<br><br>
+
+    <span id="display-name-final"></span> packed the <span class="text-important yellow">tennis racket</span>
+    that had belonged to his father and started his <span class="text-important blue">trip</span>. ✈️<br><br>
+
+    He decided to <span class="text-important green">invest the money</span> he had to join the
+    world tennis circuit and <span class="text-important blue">become the best player in the world</span>. 👑
+</p>
+    <button class="btn-continue">Continue</button>
+</div>
+<div id="screen-3" class="screen-container">
+    <h2 id="screen-3_title"></h2>
+    <form id="tournaments_list">
+        <!--  Insert list of tournaments with JS      -->
+        <input class="tournament-item" placeholder="Shangai Master 1000">
+        <input class="tournament-item" placeholder="Wimbledon Grand Slam">
+        <input class="tournament-item" placeholder="Roma Master 1000">
+    </form>
+    <article id="tournament_desc">
+        <!--  Insert T. name, points, prize, total cost with JS      -->
+        <p>Roma Master 1000</p>
+        <p>Points: 1000</p>
+        <p>Prize: $150000</p>
+        <p>Tournament fee: $15000</p>
+        <p>Total cost: $20000</p>
+    </article>
+    <p id="wallet">Wallet: $175000</p>
+    <button class="btn-continue">Continue</button>
+</div>
+<div id="screen-4" class="screen-container">
+        <!--  Animation of plane flying to next country   -->
+</div>
+<div id="screen-5" class="screen-container">
+    <h2 id="tournament_name">Tournament Name</h2>
+    <button>Quarter Final</button>
+    <button>Semi Final</button>
+    <button>Final</button>
+    <div id="screen-modal" class="modal-container">
+        <h3>Tournament summary</h3>
+        <ul>
+            <li>Final position: semi finalist</li>
+            <li>Earning: $85000</li>
+            <li>Wallet:$200000</li>
+            <li>Updated rank: 93rd</li>
+        </ul>
+    </div>
+</div>
+<div id="screen-7" class="screen-container">
+    <h2>Season Over</h2>
+    <ul>
+        <li>Final ranking: 1st</li>
+        <li>Wallet: $345000</li>
+    </ul>
+    <p id="ending-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium assumenda at, atque autem debitis dolorum ea error expedita explicabo hic illo iste laborum minima nesciunt non quos repudiandae tempora, vero.</p>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,159 @@
+/* 1. Reset y Variables de Estilo */
+:root {
+    --clay-red: #d15238;
+    --grass-green: #2e7d32;
+    --court-blue: #2a5298;
+    --tennis-yellow: #ccff00;
+    --dark-grey: #1a1a1a;
+    --white: #f5f5f5;
+}
+
+/* Style for the intro-story text */
+.text-important {
+    font-weight: bold;
+}
+.red { color: #ff4d4d; }
+.blue { color: #3498db; }
+.yellow { color: #f1c40f; }
+.green { color: #2ecc71; }
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url('../img/tennis-net.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: rgba(0, 0, 0, 0.6);
+    background-blend-mode: overlay;
+    color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* 2. Estructura de Slides (Pantallas) */
+.screen-container {
+    display: none; /* Oculto por defecto */
+    width: 90vw;
+    max-width: 800px;
+    min-height: 500px;
+    background: linear-gradient(135deg, #2c3e50, #00000000);
+    border: 4px solid var(--court-blue);
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    text-align: center;
+}
+
+/* Solo la pantalla activa se muestra (esto lo manejarás con JS) */
+.screen-container.active {
+    display: flex;
+}
+
+/* 3. Tipografía y Encabezados */
+h1 {
+    font-size: 3.5rem;
+    color: var(--tennis-yellow);
+    text-transform: uppercase;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: var(--court-blue);
+    border-bottom: 2px solid var(--tennis-yellow);
+    padding-bottom: 10px;
+}
+
+#intro-story {
+    text-align: left;
+}
+/* 4. Formularios e Inputs */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+input {
+    padding: 12px;
+    border-radius: 5px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+}
+
+input::placeholder {
+    color: #bbb;
+}
+
+/* 5. Botones Estilo Tenis */
+button {
+    background-color: var(--tennis-yellow);
+    color: black;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    text-transform: uppercase;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background-color: #e6ff80;
+}
+
+/* 6. Listado de Torneos (Screen 3) */
+#tournaments_list {
+    background: rgba(0,0,0,0.3);
+    padding: 20px;
+    border-radius: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.tournament-item {
+    cursor: pointer;
+    margin-bottom: 5px;
+    background: var(--clay-red); /* Color arcilla para ítems */
+}
+
+/* 7. Modal de Resumen (Screen 5) */
+#screen-modal {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid var(--tennis-yellow);
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    width: 80%;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+    font-size: 1.2rem;
+}
+
+/* 8. Wallet / Dinero */
+#wallet {
+    font-weight: bold;
+    color: #4caf50;
+    font-size: 1.4rem;
+}
