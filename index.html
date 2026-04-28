@@ -63,43 +63,43 @@
     <button class="btn-continue">Continue</button>
 </div>
 <div id="screen-3" class="screen-container">
-    <h2 id="screen-3_title"></h2>
-    <form id="tournaments_list">
-        <!--  Insert list of tournaments with JS      -->
-        <input class="tournament-item" placeholder="Shangai Master 1000">
-        <input class="tournament-item" placeholder="Wimbledon Grand Slam">
-        <input class="tournament-item" placeholder="Roma Master 1000">
-    </form>
-    <article id="tournament_desc">
-        <!--  Insert T. name, points, prize, total cost with JS      -->
-        <p>Roma Master 1000</p>
-        <p>Points: 1000</p>
-        <p>Prize: $150000</p>
-        <p>Tournament fee: $15000</p>
-        <p>Total cost: $20000</p>
-    </article>
-    <p id="wallet">Wallet: $175000</p>
-    <button class="btn-continue">Continue</button>
+    <h2 id="screen-3_title">Circuit: December</h2>
+
+    <div id="tournaments_list"></div>
+
+    <div class="info-display">
+        <p id="display-tournament-name">Select a tournament</p>
+        <p id="display-points">Points: 0</p>
+        <p id="display-prize">Prize: $0</p>
+        <p id="display-fee">Tournament fee: $0</p>
+        <p id="display-total-cost">Total cost: $0</p>
+    </div>
+
+    <p id="wallet">Wallet: $50000</p>
+    <button class="btn-continue">CONTINUE</button>
 </div>
 <div id="screen-4" class="screen-container">
         <!--  Animation of plane flying to next country   -->
 </div>
 <div id="screen-5" class="screen-container">
-    <h2 id="tournament_name">Tournament Name</h2>
-    <button>Quarter Final</button>
-    <button>Semi Final</button>
-    <button>Final</button>
-    <div id="screen-modal" class="modal-container">
+    <h2 id="tournament_name_header">Hong Kong Open</h2>
+
+    <div class="match-controls">
+        <button id="btn-quarter" class="btn-match">QUARTER FINAL</button>
+        <button id="btn-semi" class="btn-match">SEMI FINAL</button>
+        <button id="btn-final" class="btn-match">FINAL</button>
+    </div>
+
+    <div class="summary-box">
         <h3>Tournament summary</h3>
-        <ul>
-            <li>Final position: semi finalist</li>
-            <li>Earning: $85000</li>
-            <li>Wallet:$200000</li>
-            <li>Updated rank: 93rd</li>
-        </ul>
+        <p id="display-final-pos">Final position: ---</p>
+        <p id="display-earning">Earning: ----</p>
+        <p id="display-wallet-update">Wallet: ----</p>
+        <p id="display-rank-update">Updated rank: --</p>
     </div>
 </div>
-<div id="screen-7" class="screen-container">
+
+<div id="screen-6" class="screen-container">
     <h2>Season Over</h2>
     <ul>
         <li>Final ranking: 1st</li>

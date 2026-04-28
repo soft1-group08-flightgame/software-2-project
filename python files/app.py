@@ -1,55 +1,64 @@
-import os
-import mysql.connector
-from dotenv import load_dotenv
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+import os                          # Lets Python read the secret variables from the .env file
+import mysql.connector             # Driver that connects Python to the MariaDB database
+from dotenv import load_dotenv     # Reads the .env file and loads its values into the system
+from flask import Flask, jsonify, request  # Flask = web server | jsonify = sends data as JSON | request = reads URL parameters
+from flask_cors import CORS        # Allows the HTML/JS frontend to communicate with this Python server
 
+import config                      # Imports starting game values (starting_money, starting_rank)
 
-import config
-
-# 1. Load the secrets from the .env file into the system
+# Load the database credentials from the .env file
 load_dotenv()
 
-# 2. Initialize the Flask web server
+# Create the Flask web server
 app = Flask(__name__)
 
-# 3. Enable CORS so  HTML/JS can talk to this Python server without security errors
+# Allow the browser to call this server (without this, the browser blocks the requests)
 CORS(app)
 
-# 4. Connect to MariaDB using the secrets we loaded from .env
 
-config.conn = mysql.connector.connect(
-    host=os.environ.get('HOST'),
-    database=os.environ.get('DB_NAME'),
-    user=os.environ.get('DB_USER'),
-    password=os.environ.get('DB_PASS'),
-    autocommit=True
-)
+# This function opens a connection to the MariaDB database
+# It is called inside each route so the connection stays fresh
+def get_db():
+    return mysql.connector.connect(
+        host=os.environ.get('HOST'),
+        database=os.environ.get('DB_NAME'),
+        user=os.environ.get('DB_USER'),
+        password=os.environ.get('DB_PASS'),
+        autocommit=True
+    )
 
 
-# --- THE ROUTES (Endpoints) ---
+# --- ROUTES ---
+# A route is a URL that JavaScript can call to get data from the server
 
-# This route starts a new game.
-# Address: http://127.0.0.1:5000/newgame?player=YourName
+
+# Route 1: returns the player's starting stats when a new game begins
+# Example: http://127.0.0.1:5000/newgame?player=Gaetano
 @app.route('/newgame')
 def newgame():
-    # Grab the 'player' name from the URL address
-    player_name = request.args.get("player")
-
-    # Get the starting values we defined in config.py
-    money = config.starting_money
-    rank = config.starting_rank
-
-    # Return this data as a JSON object (a format the browser understands)
+    player_name = request.args.get('player')  # Reads the player name from the URL
     return jsonify({
         "status": "success",
         "player": player_name,
-        "money": money,
-        "rank": rank
+        "money": config.starting_money,        # 50000 — from config.py
+        "rank":  config.starting_rank          # 250 — from config.py
     })
 
 
-# 5. Start the server on port 5000
+# Route 2: returns all tournaments for a given month from the database
+# Example: http://127.0.0.1:5000/get_tournaments?month=January
+@app.route('/get_tournaments')
+def get_tournaments():
+    month_name = request.args.get('month')     # Reads the month name from the URL
+
+    conn = get_db()                            # Open database connection
+    cursor = conn.cursor(dictionary=True)      # dictionary=True returns rows as {key: value} instead of plain lists
+    cursor.execute("SELECT * FROM tournaments WHERE month = %s", (month_name,))  # Query the database
+    tournaments = cursor.fetchall()            # Get all results
+
+    return jsonify(tournaments)                # Send the list of tournaments to JavaScript as JSON
+
+
+# Start the server on port 5000 when running: python app.py
 if __name__ == '__main__':
-    # debug=True means the server restarts automatically when you save changes
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000)             # debug=True auto-restarts the server when you save changes
