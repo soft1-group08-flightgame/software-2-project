@@ -62,12 +62,16 @@ document.getElementById('form-intro').addEventListener('submit', async function(
     playerAge    = e.target.age.value;
 
     // call the python server to get the starting money and rank
-    let response = await fetch("http://127.0.0.1:5000/newgame?player=" + playerName);
-    let data     = await response.json();
-
-    // set the starting values from the server
-    playerMoney = data.money;
-    playerRank  = data.rank;
+    // try...catch prevents the app from crashing if the server is offline
+    try {
+        let response = await fetch("http://127.0.0.1:5000/newgame?player=" + playerName);
+        let data     = await response.json();
+        playerMoney  = data.money;
+        playerRank   = data.rank;
+    } catch (error) {
+        alert("Cannot connect to the server. Make sure app.py is running!");
+        return;
+    }
 
     // fill in the story text with the player info
     document.getElementById('display-name').textContent        = playerName;
@@ -96,7 +100,7 @@ async function loadMonth() {
     document.getElementById('screen-3_title').textContent = "Circuit: " + monthName;
     document.getElementById('wallet').textContent = "Wallet: $" + playerMoney.toLocaleString();
 
-    // reset the info panel on the right
+    // reset the info panel
     document.getElementById('display-tournament-name').textContent = "Select a tournament";
     document.getElementById('display-points').textContent          = "Points: -";
     document.getElementById('display-prize').textContent           = "Prize: -";
@@ -104,45 +108,55 @@ async function loadMonth() {
     document.getElementById('display-total-cost').textContent      = "Total cost: -";
     selectedTournament = null;
 
-    // call the python server to get the tournaments for this month
-    let response    = await fetch("http://127.0.0.1:5000/get_tournaments?month=" + monthName);
-    let tournaments = await response.json();
+    // try block: we attempt to call the Python server
+    // if the server is offline, the catch block runs instead of crashing the app
+    try {
+        // fetch sends a request to the Flask server asking for tournaments this month
+        let response    = await fetch("http://127.0.0.1:5000/get_tournaments?month=" + monthName);
+        // .json() converts the server response into a JavaScript array we can use
+        let tournaments = await response.json();
 
-    // calculate the fee and total cost for each tournament
-    for (let i = 0; i < tournaments.length; i++) {
-        tournaments[i].fee       = tournaments[i].prize_money * FEE_RATE;
-        tournaments[i].totalCost = tournaments[i].fee + TRAVEL_FEE;
-    }
-
-    // build the tournament list
-    let listEl = document.getElementById('tournaments_list');
-    listEl.innerHTML = ""; // clear the list from last month
-
-    for (let i = 0; i < tournaments.length; i++) {
-        let t    = tournaments[i];
-        let item = document.createElement('div');
-        item.className   = 'tournament-item';
-        item.textContent = t.name + " - " + t.city;
-
-        // if the player can't afford it, disable it
-        if (playerMoney < t.totalCost) {
-            item.className += ' disabled';
-            item.addEventListener('click', function() {
-                // show why it's disabled
-                document.getElementById('display-tournament-name').textContent = "❌ Not enough money!";
-                document.getElementById('display-points').textContent          = "You need $" + t.totalCost.toLocaleString();
-                document.getElementById('display-prize').textContent           = "You have $" + Math.round(playerMoney).toLocaleString();
-                document.getElementById('display-fee').textContent             = "Pick a cheaper tournament.";
-                document.getElementById('display-total-cost').textContent      = "";
-            });
-        } else {
-            item.addEventListener('click', makeSelectHandler(t));
+        // calculate the entry fee and total cost for each tournament
+        for (let i = 0; i < tournaments.length; i++) {
+            tournaments[i].fee       = tournaments[i].prize_money * FEE_RATE;
+            tournaments[i].totalCost = tournaments[i].fee + TRAVEL_FEE;
         }
 
-        listEl.appendChild(item);
-    }
+        // build the tournament list on screen 3
+        let listEl = document.getElementById('tournaments_list');
+        listEl.innerHTML = ""; // clear the list from the previous month
 
-    goToScreen('screen-3');
+        for (let i = 0; i < tournaments.length; i++) {
+            let t    = tournaments[i];
+            let item = document.createElement('div');
+            item.className   = 'tournament-item';
+            item.textContent = t.name + " - " + t.city;
+
+            // if the player cannot afford this tournament, disable it
+            if (playerMoney < t.totalCost) {
+                item.className += ' disabled';
+                item.addEventListener('click', function() {
+                    // show why it is disabled in the info panel
+                    document.getElementById('display-tournament-name').textContent = "❌ Not enough money!";
+                    document.getElementById('display-points').textContent          = "You need $" + t.totalCost.toLocaleString();
+                    document.getElementById('display-prize').textContent           = "You have $" + Math.round(playerMoney).toLocaleString();
+                    document.getElementById('display-fee').textContent             = "Pick a cheaper tournament.";
+                    document.getElementById('display-total-cost').textContent      = "";
+                });
+            } else {
+                item.addEventListener('click', makeSelectHandler(t));
+            }
+
+            listEl.appendChild(item);
+        }
+
+        goToScreen('screen-3');
+
+    } catch (error) {
+        // catch block: runs only if the fetch failed (server offline or connection error)
+
+        alert("Cannot connect to the server. Make sure app.py is running!");
+    }
 }
 
 // we need a separate function here because of how JavaScript handles
