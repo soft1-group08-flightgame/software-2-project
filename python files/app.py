@@ -50,14 +50,37 @@ def newgame():
 @app.route('/get_tournaments')
 def get_tournaments():
     month_name = request.args.get('month')     # Reads the month name from the URL
+    conn = None
 
-    conn = get_db()                            # Open database connection
-    cursor = conn.cursor(dictionary=True)      # dictionary=True returns rows as {key: value} instead of plain lists
-    cursor.execute("SELECT * FROM tournaments WHERE month = %s", (month_name,))  # Query the database
-    tournaments = cursor.fetchall()            # Get all results
+    try:
+        conn = get_db()                            # Open database connection
+        cursor = conn.cursor(dictionary=True)      # dictionary=True returns rows as {key: value} instead of plain lists
+        cursor.execute("SELECT * FROM tournaments WHERE month = %s", (month_name,))  # Query the database
+        tournaments = cursor.fetchall()            # Get all results
 
-    return jsonify(tournaments)                # Send the list of tournaments to JavaScript as JSON
+        return jsonify(tournaments)                # Send the list of tournaments to JavaScript as JSON
+    except:
+        response = {
+            'message': 'Invalid Month passed to the URL',
+            'status': 400
+        }
+        json_response = jsonify(response)
 
+        return json_response
+
+    finally:
+        # Closes the connection
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+@app.errorhandler(404)
+def page_not_found(error):
+    response = {
+        "message": "Invalid endpoint",
+        "status": 404
+    }
+    return jsonify(response)
 
 # Start the server on port 5000 when running: python app.py
 if __name__ == '__main__':
