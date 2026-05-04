@@ -15,21 +15,19 @@ let currentMonthIndex  = 0;
 let selectedTournament = null;
 let currentRoundIndex  = 0;
 let matchScore         = 0;
+let TRAVEL_FEE         = 0;
+let FEE_RATE           = 0;
 
-let roundsOrder = ["Quarter Finals", "Semi Finals", "Finals"];
+const roundsOrder = ["Quarter Finals", "Semi Finals", "Finals"];
 
-let months = [
+const months = [
     "January", "February", "March", "April",
     "May", "June", "July", "August",
     "September", "October", "November", "December"
 ];
 
-// game rules
-let TRAVEL_FEE = 5000;
-let FEE_RATE   = 0.02; // entry fee is 2% of the prize money
-
 // background image for each screen
-let screenBackgrounds = {
+const screenBackgrounds = {
     'screen-1': '../img/tennis-net.jpeg',
     'screen-2': '../img/old-raquet.jpeg',
     'screen-3': '../img/airport-terminal.jpeg',
@@ -54,20 +52,27 @@ function goToScreen(screenId) {
 
 
 // screen 1 - get player name, nation and age from the form
-document.getElementById('form-intro').addEventListener('submit', async function(e) {
-    e.preventDefault(); // stop the page from reloading
+let formIntro = document.getElementById('form-intro')
+formIntro.addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-    playerName   = e.target.name.value;
-    playerNation = e.target.nation.value;
-    playerAge    = e.target.age.value;
+    playerName   = formIntro.querySelector('input[name="name"]').value;
+    playerNation = formIntro.querySelector('input[name="nation"]').value;
+    playerAge    = formIntro.querySelector('input[name="age"]').value;
 
     // call the python server to get the starting money and rank
     // try...catch prevents the app from crashing if the server is offline
     try {
-        let response = await fetch("http://127.0.0.1:5000/newgame?player=" + playerName);
+        let response = await fetch("http://127.0.0.1:5000/newgame");
         let data     = await response.json();
         playerMoney  = data.money;
         playerRank   = data.rank;
+        TRAVEL_FEE = data.TRAVEL_FEE;
+        FEE_RATE = data.FEE_RATE;
+
+        console.log(TRAVEL_FEE);    // print values on console
+        console.log(FEE_RATE);      // print values on console
+
     } catch (error) {
         alert("Cannot connect to the server. Make sure app.py is running!");
         return;
@@ -144,8 +149,25 @@ async function loadMonth() {
                     document.getElementById('display-total-cost').textContent      = "";
                 });
             } else {
-                item.addEventListener('click', makeSelectHandler(t));
-            }
+                item.addEventListener('click', function(event) {
+                    selectedTournament = t;
+
+                    // remove highlight from all items
+                    let allItems = document.querySelectorAll('.tournament-item');
+                    for (let i = 0; i < allItems.length; i++) {
+                        allItems[i].classList.remove('selected');
+                    }
+                    // highlight the clicked one
+                    event.currentTarget.classList.add('selected');
+
+                    // show the tournament details
+                    document.getElementById('display-tournament-name').textContent = t.name;
+                    document.getElementById('display-points').textContent          = "Points: " + t.points;
+                    document.getElementById('display-prize').textContent           = "Prize: $" + t.prize_money.toLocaleString();
+                    document.getElementById('display-fee').textContent             = "Fee: $" + t.fee.toLocaleString();
+                    document.getElementById('display-total-cost').textContent      = "Total cost: $" + t.totalCost.toLocaleString() + " (fee + travel)";
+                })
+                };
 
             listEl.appendChild(item);
         }
@@ -158,30 +180,6 @@ async function loadMonth() {
         alert("Cannot connect to the server. Make sure app.py is running!");
     }
 }
-
-// we need a separate function here because of how JavaScript handles
-// variables inside loops - without this, all items would show the last tournament
-function makeSelectHandler(t) {
-    return function() {
-        selectedTournament = t;
-
-        // remove highlight from all items
-        let allItems = document.querySelectorAll('.tournament-item');
-        for (let i = 0; i < allItems.length; i++) {
-            allItems[i].classList.remove('selected');
-        }
-        // highlight the one we clicked
-        event.currentTarget.classList.add('selected');
-
-        // show the tournament details
-        document.getElementById('display-tournament-name').textContent = t.name;
-        document.getElementById('display-points').textContent          = "Points: " + t.points;
-        document.getElementById('display-prize').textContent           = "Prize: $" + t.prize_money.toLocaleString();
-        document.getElementById('display-fee').textContent             = "Fee: $" + t.fee.toLocaleString();
-        document.getElementById('display-total-cost').textContent      = "Total cost: $" + t.totalCost.toLocaleString() + " (fee + travel)";
-    };
-}
-
 
 // screen 3 continue button - travel to the tournament
 document.querySelector('#screen-3 .btn-continue').addEventListener('click', function() {
@@ -202,11 +200,11 @@ document.querySelector('#screen-3 .btn-continue').addEventListener('click', func
 
     goToScreen('screen-4');
 
-    // after 2.5 seconds go to the match screen
+    // after 2 seconds go to the match screen
     setTimeout(function() {
         setupMatchScreen();
         goToScreen('screen-5');
-    }, 1000);
+    }, 2000);
 });
 
 
@@ -267,8 +265,9 @@ function revealRound(roundIndex) {
     if (roundIndex === 2) button = document.getElementById('btn-final');
 
     // check if the player won this round
-    let roundThresholds = [0, 35, 60]; // min score needed for each round
+    let roundThresholds = [35, 60, 80]; // min score needed for each round
     let playerWon = matchScore >= roundThresholds[roundIndex];
+    console.log(matchScore)
 
     if (playerWon) {
         button.className  = 'btn-match win';
@@ -277,7 +276,7 @@ function revealRound(roundIndex) {
 
         // if it was the final, check if champion
         if (roundIndex === 2) {
-            if (matchScore >= 80) {
+            if (matchScore >= roundThresholds[2]) {
                 button.textContent = "🏆 CHAMPION!";
             }
             showMatchSummary();
@@ -291,11 +290,9 @@ function revealRound(roundIndex) {
 }
 
 // connect the round buttons to the revealRound function
-window.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('btn-quarter').addEventListener('click', function() { revealRound(0); });
-    document.getElementById('btn-semi').addEventListener('click',    function() { revealRound(1); });
-    document.getElementById('btn-final').addEventListener('click',   function() { revealRound(2); });
-});
+document.getElementById('btn-quarter').addEventListener('click', function() { revealRound(0); });
+document.getElementById('btn-semi').addEventListener('click',    function() { revealRound(1); });
+document.getElementById('btn-final').addEventListener('click',   function() { revealRound(2); });
 
 
 // calculate earnings and update the player stats after the match

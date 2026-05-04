@@ -36,12 +36,15 @@ def get_db():
 # Example: http://127.0.0.1:5000/newgame?player=Gaetano
 @app.route('/newgame')
 def newgame():
-    player_name = request.args.get('player')  # Reads the player name from the URL
+    # player_name = request.args.get('player')  # Reads the player name from the URL
     return jsonify({
         "status": "success",
-        "player": player_name,
         "money": config.starting_money,        # 50000 — from config.py
-        "rank":  config.starting_rank          # 250 — from config.py
+        "rank":  config.starting_rank,     # 250 — from config.py
+
+        # game rules
+        "TRAVEL_FEE" : config.TRAVEL_FEE,                     # travel fee is a constant amount
+        "FEE_RATE" : config.FEE_RATE                       # entry fee is 2 % of the prize money
     })
 
 
@@ -57,6 +60,7 @@ def get_tournaments():
         cursor = conn.cursor(dictionary=True)      # dictionary=True returns rows as {key: value} instead of plain lists
         cursor.execute("SELECT * FROM tournaments WHERE month = %s", (month_name,))  # Query the database
         tournaments = cursor.fetchall()            # Get all results
+        print(tournaments)
 
         return jsonify(tournaments)                # Send the list of tournaments to JavaScript as JSON
     except:
@@ -84,4 +88,4 @@ def page_not_found(error):
 
 # Start the server on port 5000 when running: python app.py
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)             # debug=True auto-restarts the server when you save changes
+    app.run(debug=True, port=5000)

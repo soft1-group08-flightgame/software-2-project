@@ -247,7 +247,7 @@ button:hover {
     top: 50%;
     transform: translateY(-50%); /* centres it vertically */
     font-size: 2rem;
-    animation: fly 0.9s ease-in-out forwards; /* runs the fly animation once */
+    animation: fly 1.6s ease-in-out forwards; /* runs the fly animation once */
 }
 
 /* the keyframes define how the plane moves from left to right */
